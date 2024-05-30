@@ -37,8 +37,7 @@ def find_position(input_str,name):  #根据姓名找到其职位
             if i<len(lines)-1:
                 return lines[i+1]
             else:
-                return "获取不到该人才的职业"
-    return "企查查中找不到该人才的职务"
+                return -1
 
 
 def get_company_url():
@@ -214,7 +213,6 @@ def get_company_msg():
                     #    xpath: //*[@id="cominfo"]/div[2]/table/tr[3]/td[2]
                 ).text
                 print("zhuceziben:", zhuceziben)
-
             except:
                 zhuceziben = ""
 
@@ -225,14 +223,15 @@ def get_company_msg():
                     #     xpath://*[@id="cominfo"]/div[2]/table/tr[2]/td[2]/div/div/span[2]/span/span/a
                 ).text
                 print("fadingdaibiaoren:", fadingdaibiaoren)
-
             except:
                 fadingdaibiaoren = ""
 
             try:
                 table = driver.find_element(By.XPATH,'//*[@id="mainmember"]/div[2]/div[2]/table').text
                 # print("table:",table)  #输出表格内容
-                print(f'职务为{find_position(table,person)}')
+                if find_position(table, person) != -1:
+                    print(f'{person}的职务为{find_position(table,person)}')
+                    data.at[index, data.columns[data.columns.get_loc("人才姓名") + 1]] = find_position(table,person)
 
             except:
                 table = ""
