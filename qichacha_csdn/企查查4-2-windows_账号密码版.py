@@ -27,8 +27,16 @@ check_dict = {
 }
 
 # 企查查用户名和密码
-username = "18761869337"
-password = "liujian19951211"
+# username = "18761869337"
+# password = "liujian19951211"
+
+# 小郭的账号密码
+# username = "19812867927"
+# password = "GSJ04243194"
+
+#徐某的账号密码
+username = "15716146450"
+password = "xj970620"
 
 def find_position(input_str,name):  #根据姓名找到其职位
     lines = input_str.split('\n')
@@ -108,34 +116,51 @@ def get_company_url():
                 f"https://www.qcc.com/web/search?key={name}"
             )  # https://www.qcc.com/web/search?key={}
             try:
-                d = driver.find_element(By.XPATH,'/html/body/div[1]/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div[2]/span/span[1]/a')
-                time.sleep(3)
-                txt = driver.find_element(By.XPATH,'/html/body/div[1]/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div[2]/span/span[1]/a/span')
-                time.sleep(3)
+                d = driver.find_element(By.XPATH,'/html/body/div/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div[2]/span/span[1]/a')
+                                                     #'/html/body/div/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div/span/span[1]/a'
+                time.sleep(1)
+                # txt = driver.find_element(By.XPATH,'/html/body/div/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div[2]/span/span[1]/a/span' or
+                #                                     '/html/body/div/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div/span/span[1]/a/span')
+                # time.sleep(1)
                 # 模糊查询，路径改为这个 /html/body/div/div[2]/div[2]/div[4]/div/div[2]/div/table/tr[1]/td[3]/div/div[1]/span[1]/a/span
                 url = d.get_attribute("href")
-                print(f"{txt.text}----->>>{url}")
+                # company_urls.append(url)
+                print(f'第一次匹配到公司{name}')
+                print(f'{name}的url已经写入到表格')
+                # data["url"] = company_urls
+                data.at[index,'url'] = url
+                data.to_excel(path, index=False)
 
-                if txt.text == name:
-                    company_urls.append(url)
-                    print(f'匹配到公司{name}')
-                else:
-                    print(f"查询名字：{name} --不一致---> 企查查名字：{txt.text}")
-                    company_urls.append("")
+                # print(f"{txt.text}----->>>{url}")
+                #
+                # if txt.text == name:
+                #     company_urls.append(url)
+                #     print(f'匹配到公司{name}')
+                # else:
+                #     print(f"查询名字：{name} --不一致---> 企查查名字：{txt.text}")
+                #     company_urls.append("")
 
             except NoSuchElementException:
-                print(f"没找到该公司--->{name}")
-                company_urls.append("")
-                continue
-            time.sleep(15)
+                d = driver.find_element(By.XPATH,'/html/body/div/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div/span/span[1]/a')
+                time.sleep(1)
+                url = d.get_attribute("href")
+                # company_urls.append(url)
+                print(f'第二次匹配到公司{name}')
+                # data["url"] = company_urls
+                data.at[index, 'url'] = url
+                data.to_excel(path, index=False)
+                print(f'{name}的url已经写入到表格')
+                # print(f"没找到该公司--->{name}")
+                # company_urls.append("")
+                # continue
+            time.sleep(10)
         except:
             company_urls.append("")
-            time.sleep(15)
+            time.sleep(10)
             continue
 
-    data["url"] = company_urls
-    data.to_excel(path, index=None)
-
+    # data["url"] = company_urls
+    # data.to_excel(path, index=None)
 
 def get_company_msg():
     path = "company_msg.xlsx"
@@ -197,11 +222,13 @@ def get_company_msg():
             try:
                 shehui_xinyong = driver.find_element(
                     By.XPATH,
-                    # '//*[@id="cominfo"]/div[2]/table/tr[1]/td[2]/div/span[1]'
                     '//*[@id="cominfo"]/div[2]/table/tr[1]/td[2]/span/span[1]'
 
                 ).text
                 print("shehui_xinyong:", shehui_xinyong)
+                data["统一社会信用代码"] = shehui_xinyong
+                data.to_excel(path, index=None)
+                # data.at[index, data.columns[data.columns.get_loc("入驻企业") + 1]] = shehui_xinyong
             except:
                 shehui_xinyong = ""
 
@@ -227,11 +254,19 @@ def get_company_msg():
                 fadingdaibiaoren = ""
 
             try:
-                table = driver.find_element(By.XPATH,'//*[@id="mainmember"]/div[2]/div[2]/table').text
-                # print("table:",table)  #输出表格内容
-                if find_position(table, person) != -1:
-                    print(f'{person}的职务为{find_position(table,person)}')
-                    data.at[index, data.columns[data.columns.get_loc("人才姓名") + 1]] = find_position(table,person)
+                table = driver.find_element(By.XPATH, '//*[@id="mainmember"]/div[2]/div[2]/table')  # 获取表格
+                rows = table.find_elements(By.XPATH, './/tr[position() > 1]')
+                for row in rows:
+                    columns = row.find_elements(By.XPATH, './/td')
+                    name = columns[1].text
+                    position = columns[2].text
+                    if name.split('\n')[1] == person:
+                        print(f'{person}的职务为{position}')
+                        data["人才职务"] = position
+                        data.to_excel(path, index=None)
+                        # data.at[index, data.columns[data.columns.get_loc("人才姓名") + 1]] = position
+                        break
+                print(f'未找到{person}的职务')
 
             except:
                 table = ""
@@ -279,7 +314,6 @@ def get_company_msg():
             "统一社会信用代码": shehui_xinyong,
             "注册资本": zhuceziben,
             "法定代表人/负责人": fadingdaibiaoren,
-            "主要人员表格":table
             # "所属行业": suoshuhangye,
             # "经营范围": jingyingfanwei,
             # "注册地址": zhucedizhi,
@@ -291,20 +325,20 @@ def get_company_msg():
                 msg_dict[name] = str(msg_dict[name]).replace(" ", "").replace("\n", "")
         print("msg_dict:", msg_dict)
 
-        for name in check_dict:
-            before = str(row[name]).strip()
-            new = msg_dict[name]
-            # 判断新旧内容是否有变化
-            if before == new:
-                check_dict[name].append(before)
-            elif not new:
-                check_dict[name].append(before)
-            else:
-                check_dict[name].append(new)
-
-    for name in check_dict:
-        data[name] = check_dict[name]
-    data.to_excel(path, index=None)
+    #     for name in check_dict:
+    #         before = str(row[name]).strip()
+    #         new = msg_dict[name]
+    #         # 判断新旧内容是否有变化
+    #         if before == new:
+    #             check_dict[name].append(before)
+    #         elif not new:
+    #             check_dict[name].append(before)
+    #         else:
+    #             check_dict[name].append(new)
+    #
+    # for name in check_dict:
+    #     data[name] = check_dict[name]
+    # data.to_excel(path, index=None)
 
 
 if __name__ == "__main__":
