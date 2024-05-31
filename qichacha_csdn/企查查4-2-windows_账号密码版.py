@@ -126,7 +126,7 @@ def get_company_url():
                 url = d.get_attribute("href")
                 # company_urls.append(url)
                 print(f'第一次匹配到公司{name}')
-                print(f'{name}的url已经写入到表格')
+                print(f'{name}的url已经写入到表格\n')
                 # data["url"] = company_urls
                 data.at[index,'url'] = url
                 data.to_excel(path, index=False)
@@ -149,7 +149,7 @@ def get_company_url():
                 # data["url"] = company_urls
                 data.at[index, 'url'] = url
                 data.to_excel(path, index=False)
-                print(f'{name}的url已经写入到表格')
+                print(f'{name}的url已经写入到表格\n')
                 # print(f"没找到该公司--->{name}")
                 # company_urls.append("")
                 # continue
@@ -226,7 +226,7 @@ def get_company_msg():
 
                 ).text
                 print("shehui_xinyong:", shehui_xinyong)
-                data["统一社会信用代码"] = shehui_xinyong
+                data.at[index, '统一社会信用代码'] = shehui_xinyong
                 data.to_excel(path, index=None)
                 # data.at[index, data.columns[data.columns.get_loc("入驻企业") + 1]] = shehui_xinyong
             except:
@@ -262,7 +262,8 @@ def get_company_msg():
                     position = columns[2].text
                     if name.split('\n')[1] == person:
                         print(f'{person}的职务为{position}')
-                        data["人才职务"] = position
+                        # data["人才职务"] = position
+                        data.at[index, '人才职务'] = position
                         data.to_excel(path, index=None)
                         # data.at[index, data.columns[data.columns.get_loc("人才姓名") + 1]] = position
                         break
