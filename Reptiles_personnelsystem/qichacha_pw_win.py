@@ -146,7 +146,6 @@ def get_company_url():
                 url = d.get_attribute("href")
                 # company_urls.append(url)
                 print(f'第二次匹配到公司{name}')
-                # data["url"] = company_urls
                 data.at[index, 'url'] = url
                 data.to_excel(path, index=False)
                 print(f'{name}的url已经写入到表格\n')
@@ -164,9 +163,7 @@ def get_company_url():
 
 def get_company_msg():
     path = "company_msg.xlsx"
-    data = pd.read_excel(
-        path, sheet_name=0
-    )  # 默认读取第一个sheet的全部数据,int整数用于引用的sheet的索引（从0开始）
+    data = pd.read_excel(path, sheet_name=0)  # 默认读取第一个sheet的全部数据,int整数用于引用的sheet的索引（从0开始）
 
     option = webdriver.ChromeOptions()
     option.add_experimental_option(
@@ -213,6 +210,8 @@ def get_company_msg():
     time.sleep(20)
 
     for index, row in data.iterrows():
+        if row.isnull().all():
+            continue
         url = str(row["url"]).strip()
         person = str(row["人才姓名"]).strip()
 
@@ -220,15 +219,10 @@ def get_company_msg():
             driver.get(url)  # https://www.qcc.com/web/search?key={}
 
             try:
-                shehui_xinyong = driver.find_element(
-                    By.XPATH,
-                    '//*[@id="cominfo"]/div[2]/table/tr[1]/td[2]/span/span[1]'
-
-                ).text
+                shehui_xinyong = driver.find_element(By.XPATH,'//*[@id="cominfo"]/div[2]/table/tr[1]/td[2]/span/span[1]').text
                 print("shehui_xinyong:", shehui_xinyong)
                 data.at[index, '统一社会信用代码'] = shehui_xinyong
                 data.to_excel(path, index=None)
-                # data.at[index, data.columns[data.columns.get_loc("入驻企业") + 1]] = shehui_xinyong
             except:
                 shehui_xinyong = ""
 
@@ -256,19 +250,19 @@ def get_company_msg():
             try:
                 table = driver.find_element(By.XPATH, '//*[@id="mainmember"]/div[2]/div[2]/table')  # 获取表格
                 rows = table.find_elements(By.XPATH, './/tr[position() > 1]')
+                found = False
                 for row in rows:
                     columns = row.find_elements(By.XPATH, './/td')
                     name = columns[1].text
                     position = columns[2].text
                     if name.split('\n')[1] == person:
                         print(f'{person}的职务为{position}')
-                        # data["人才职务"] = position
                         data.at[index, '人才职务'] = position
                         data.to_excel(path, index=None)
-                        # data.at[index, data.columns[data.columns.get_loc("人才姓名") + 1]] = position
+                        found=True
                         break
-                print(f'未找到{person}的职务')
-
+                if found==False:
+                    print(f'未找到{person}的职务')
             except:
                 table = ""
 
@@ -343,5 +337,5 @@ def get_company_msg():
 
 
 if __name__ == "__main__":
-    get_company_url()  # 通过公司名字获取url，开始登录需要验证码，需要手动输入
-    # get_company_msg()  # 通过公司url获取对应字段，开始登录需要验证码，需要手动输入
+    # get_company_url()  # 通过公司名字获取url，开始登录需要验证码，需要手动输入
+    get_company_msg()  # 通过公司url获取对应字段，开始登录需要验证码，需要手动输入
