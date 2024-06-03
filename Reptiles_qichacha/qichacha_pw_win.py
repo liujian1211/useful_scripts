@@ -251,8 +251,8 @@ def get_company_msg():
                 table = driver.find_element(By.XPATH, '//*[@id="mainmember"]/div[2]/div[2]/table')  # 获取表格
                 rows = table.find_elements(By.XPATH, './/tr[position() > 1]')
                 found = False
-                for row in rows:
-                    columns = row.find_elements(By.XPATH, './/td')
+                for _row in rows:
+                    columns = _row.find_elements(By.XPATH, './/td')
                     name = columns[1].text
                     position = columns[2].text
                     if name.split('\n')[1] == person:
