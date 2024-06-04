@@ -27,25 +27,16 @@ check_dict = {
 }
 
 # 企查查用户名和密码
-# username = "18761869337"
-# password = "liujian19951211"
+username = "18761869337"
+password = "liujian19951211"
 
 # 小郭的账号密码
 # username = "19812867927"
 # password = "GSJ04243194"
 
 #徐某的账号密码
-username = "15716146450"
-password = "xj970620"
-
-def find_position(input_str,name):  #根据姓名找到其职位
-    lines = input_str.split('\n')
-    for i in range(len(lines)):
-        if lines[i] == name:
-            if i<len(lines)-1:
-                return lines[i+1]
-            else:
-                return -1
+# username = "15716146450"
+# password = "xj970620"
 
 
 def get_company_url():
@@ -117,10 +108,8 @@ def get_company_url():
             )  # https://www.qcc.com/web/search?key={}
             try:
                 d = driver.find_element(By.XPATH,'/html/body/div/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div[2]/span/span[1]/a')
-                                                     #'/html/body/div/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div/span/span[1]/a'
                 time.sleep(1)
-                # txt = driver.find_element(By.XPATH,'/html/body/div/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div[2]/span/span[1]/a/span' or
-                #                                     '/html/body/div/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div/span/span[1]/a/span')
+                # txt = driver.find_element(By.XPATH,'/html/body/div/div[2]/div[2]/div[3]/div/div[2]/div/table/tr[1]/td[3]/div[2]/span/span[1]/a/span')
                 # time.sleep(1)
                 # 模糊查询，路径改为这个 /html/body/div/div[2]/div[2]/div[4]/div/div[2]/div/table/tr[1]/td[3]/div/div[1]/span[1]/a/span
                 url = d.get_attribute("href")
