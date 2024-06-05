@@ -27,12 +27,12 @@ check_dict = {
 }
 
 # 企查查用户名和密码
-username = "18761869337"
-password = "liujian19951211"
+# username = "18761869337"
+# password = "liujian19951211"
 
 # 小郭的账号密码
-# username = "19812867927"
-# password = "GSJ04243194"
+username = "19812867927"
+password = "GSJ04243194"
 
 #徐某的账号密码
 # username = "15716146450"
@@ -41,9 +41,7 @@ password = "liujian19951211"
 
 def get_company_url():
     path = "company_msg.xlsx"
-    data = pd.read_excel(
-        path, sheet_name=0
-    )  # 默认读取第一个sheet的全部数据,int整数用于引用的sheet的索引（从0开始）
+    data = pd.read_excel(path, sheet_name=0)  # 默认读取第一个sheet的全部数据,int整数用于引用的sheet的索引（从0开始）
 
     option = webdriver.ChromeOptions()
     option.add_experimental_option(
@@ -95,6 +93,7 @@ def get_company_url():
 
     for index, row in data.iterrows():
         name = str(row["入驻企业"]).strip()
+        name = name.replace('\n','')
         print(f"公司名称：{name}")
         if "公司" in name:
             name = re.findall("^.*?公司", name)[0]  # 排除曾用名的
@@ -141,11 +140,12 @@ def get_company_url():
                 # print(f"没找到该公司--->{name}")
                 # company_urls.append("")
                 # continue
-            time.sleep(10)
+            time.sleep(15)
         except:
             company_urls.append("")
-            time.sleep(10)
+            time.sleep(15)
             continue
+    time.sleep(10)
 
     # data["url"] = company_urls
     # data.to_excel(path, index=None)
@@ -155,9 +155,7 @@ def get_company_msg():
     data = pd.read_excel(path, sheet_name=0)  # 默认读取第一个sheet的全部数据,int整数用于引用的sheet的索引（从0开始）
 
     option = webdriver.ChromeOptions()
-    option.add_experimental_option(
-        "excludeSwitches", ["enable-automation"]
-    )  # webdriver防检测
+    option.add_experimental_option("excludeSwitches", ["enable-automation"])  # webdriver防检测
 
     option.add_argument("--disable-blink-features=AutomationControlled")
     option.add_argument("--no-sandbox")
@@ -166,8 +164,7 @@ def get_company_msg():
     # driver = webdriver.Chrome(executable_path=r"/usr/bin/chromedriver", options=option)  # linux使用
     driver.set_page_load_timeout(25)
     driver.delete_all_cookies()
-    url = (
-        "https://www.qcc.com/weblogin?back=%2F"  # https://www.qcc.com/weblogin?back=%2F
+    url = ("https://www.qcc.com/weblogin?back=%2F"  # https://www.qcc.com/weblogin?back=%2F
     )
 
     driver.get(url)
@@ -243,6 +240,9 @@ def get_company_msg():
                 for _row in rows:
                     columns = _row.find_elements(By.XPATH, './/td')
                     name = columns[1].text
+                    person = person.replace('*', '') #去掉表格名字中的*
+                    if re.search('[\u4e00-\u9fa5]', person):
+                        person = re.sub(r'\s+', '', person)
                     position = columns[2].text
                     if name.split('\n')[1] == person:
                         print(f'{person}的职务为{position}')
@@ -308,6 +308,8 @@ def get_company_msg():
             if msg_dict[name]:
                 msg_dict[name] = str(msg_dict[name]).replace(" ", "").replace("\n", "")
         print("msg_dict:", msg_dict)
+
+        time.sleep(10)  #没查完一个公司就挺10s，防止被封
 
     #     for name in check_dict:
     #         before = str(row[name]).strip()

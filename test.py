@@ -2,14 +2,10 @@ import os
 import pandas as pd
 import re
 
-degree_mapping = {
-    '学士': 0,
-    '硕士': 1,
-    '博士': 2,
-    '其他': 3
-}
+name = '葛  为**'
 
-degree = '博士'
+name = name.replace('*', '') #去掉名字中的*
+if re.search('[\u4e00-\u9fa5]', name):
+    name = re.sub(r'\s+', '', name)
 
-degree_value = degree_mapping.get(degree, -1)
-print(f'学历为{degree_value}')
+print(f'名字为{name}')
