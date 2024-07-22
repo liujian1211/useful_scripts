@@ -35,7 +35,6 @@ with open(train_file, 'w', encoding='utf-8') as f:
             "content": row['content'],
             "summary": row['summary']
         }
-        # json.dump(data, f, ensure_ascii=False)
         clean_row = clean_data(data)
         json.dump(clean_row, f, ensure_ascii=False)
         f.write('\n')
@@ -48,7 +47,6 @@ with open(val_file, 'w', encoding='utf-8') as f:
             "content": row['content'],
             "summary": row['summary']
         }
-        # json.dump(data, f, ensure_ascii=False)
         clean_row = clean_data(data)
         json.dump(clean_row, f, ensure_ascii=False)
         f.write('\n')
