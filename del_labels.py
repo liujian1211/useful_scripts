@@ -1,7 +1,7 @@
 import os
 
-labels_dir = 'D:/damagedataset_v8/images1-2/images4.7/labels_shuini'
-images_dir = 'D:/damagedataset_v8/images1-2/images4.7/shuini'
+labels_dir = 'D:/images7.22/labels_liqing'
+images_dir = 'D:/images7.22/liqing'
 
 # 获取labels文件夹中所有txt文件的文件名
 labels_files = [f.split('.')[0] for f in os.listdir(labels_dir) if f.endswith('.txt')]
