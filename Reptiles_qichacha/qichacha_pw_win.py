@@ -27,12 +27,12 @@ check_dict = {
 }
 
 # 企查查用户名和密码
-# username = "18761869337"
-# password = "liujian19951211"
+username = "18761869337"
+password = "liujian19951211"
 
 # 小郭的账号密码
-username = "19812867927"
-password = "GSJ04243194"
+# username = "19812867927"
+# password = "GSJ04243194"
 
 #徐某的账号密码
 # username = "15716146450"
@@ -137,9 +137,6 @@ def get_company_url():
                 data.at[index, 'url'] = url
                 data.to_excel(path, index=False)
                 print(f'{name}的url已经写入到表格\n')
-                # print(f"没找到该公司--->{name}")
-                # company_urls.append("")
-                # continue
             time.sleep(15)
         except:
             company_urls.append("")
@@ -215,13 +212,22 @@ def get_company_msg():
             try:
                 zhuceziben = driver.find_element(
                     By.XPATH,
-                    # '//*[@id="cominfo"]/div[2]/table/tr[3]/td[2]'
                     '//*[@id="cominfo"]/div[2]/table/tr[3]/td[2]'
-                    #    xpath: //*[@id="cominfo"]/div[2]/table/tr[3]/td[2]
                 ).text
                 print("zhuceziben:", zhuceziben)
             except:
                 zhuceziben = ""
+
+            try:
+                register_num = driver.find_element(
+                    By.XPATH,
+
+                ).text
+                print("注册号：",register_num)
+                data.at[index,'注册号'] = register_num
+                data.to_excel(path,index=None)
+            except:
+                register_num = ''
 
             try:
                 fadingdaibiaoren = driver.find_element(
@@ -309,7 +315,7 @@ def get_company_msg():
                 msg_dict[name] = str(msg_dict[name]).replace(" ", "").replace("\n", "")
         print("msg_dict:", msg_dict)
 
-        time.sleep(10)  #没查完一个公司就挺10s，防止被封
+        time.sleep(10)  #每次查完一个公司就挺10s，防止被封
 
     #     for name in check_dict:
     #         before = str(row[name]).strip()
@@ -328,5 +334,5 @@ def get_company_msg():
 
 
 if __name__ == "__main__":
-    # get_company_url()  # 通过公司名字获取url，开始登录需要验证码，需要手动输入
-    get_company_msg()  # 通过公司url获取对应字段，开始登录需要验证码，需要手动输入
+    get_company_url()  # 通过公司名字获取url，开始登录需要验证码，需要手动输入
+    # get_company_msg()  # 通过公司url获取对应字段，开始登录需要验证码，需要手动输入
