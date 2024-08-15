@@ -3,8 +3,8 @@ import shutil
 import random
 
 # 设置文件夹路径
-images_folder = 'D:/样本_已标注/asphalt/images'
-labels_folder = 'D:/样本_已标注/asphalt/labels'
+images_folder = 'D:/样本_已标注/cement/images'
+labels_folder = 'D:/样本_已标注/cement/labels'
 train_folder = 'train'
 val_folder = 'val'
 

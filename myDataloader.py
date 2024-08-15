@@ -4,6 +4,7 @@ import torchvision.transforms
 from torch.utils.data import Dataset,DataLoader
 from PIL import Image
 from torchvision import transforms
+import torchvision
 
 class MyDataset(Dataset):
     def __init__(self,image_folder,label_folder,transform):
@@ -45,6 +46,7 @@ if __name__ == '__main__':
     label_folder = 'D:/damagedataset_v8/asphalt/labels/val'
     transform = torchvision.transforms.Compose([transforms.Resize((640,640)),
                                                 transforms.ToTensor()])
+    
 
     mydataset = MyDataset(image_folder,label_folder,transform)
     dataloader = DataLoader(mydataset,batch_size=100,shuffle=True)
