@@ -5,6 +5,8 @@ import pandas as pd
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 credit_code = []
 registered_capital = []
@@ -127,14 +129,23 @@ def get_company_url():
             #若表格只有1行
             if(count==1):
                 #点击“查看”按钮
-                driver.find_element(By.XPATH,"//*[@id='app']/div/div[3]/section/div/section/main/div/div[5]/div[2]/table/tbody/tr/td[11]/div/span/a[1]/span").click()
-                time.sleep(5)  #等5s加载完成
+                driver.find_element(By.XPATH,"//*[@id='app']/div/div[3]/section/div/section/main/div/div[3]/table/tbody/tr/td[2]/div/a/span").click()
+                wait = WebDriverWait(driver,10)
+                modal = wait.until(EC.presence_of_element_located((By.CLASS_NAME,"v-modal")))
+                # time.sleep(5)  #等5s加载完成
+
 
                 try:
-                    birthDay = driver.find_element(By.ID,"3706e5fc-4eb0-ba4a-e4b7-d4bdf9537a31")
+                    # 测试一下关闭按钮
+                    iframe = modal.find_element(By.TAG_NAME, 'iframe')
+                    modal.switch_to.frame(iframe)
+                    # table_body = modal.find_element(By.CLASS_NAME, "el-dialog__body")
+                    # birthDay = driver.find_element(By.XPATH,"//*[@id='3706e5fc-4eb0-ba4a-e4b7-d4bdf9537a31']")
+                    birthDay = modal.find_element(By.ID,"3706e5fc-4eb0-ba4a-e4b7-d4bdf9537a31")
+                    # print(birthDay.text)
                     time.sleep(3)
                 except NoSuchElementException:
-                    print('没找到生日信息')
+                    print('没能关闭成功')
                 # birthDay_value = birthDay.get_attribute("value")
                 # print(f'生日的值为{birthDay_value}')
                 degree = driver.find_element(By.XPATH,"//*[@id='42e5fc73-2a69-83c5-9ff3-027fdcc36ec5']/div").text
