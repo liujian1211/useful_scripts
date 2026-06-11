@@ -186,7 +186,7 @@ def scheduled_screenshot(interval=5, max_count=None, save_dir="screenshots", mon
 
 if __name__ == "__main__":
     # ========== 配置区域 ==========
-    INTERVAL = 5          # 截图间隔（秒）
+    INTERVAL = 10          # 截图间隔（秒）
     MAX_COUNT = None      # 最大截图次数，None表示无限循环，例如设置为10则只截取10次
     SAVE_DIR = "screenshots"  # 保存目录
     MONITOR_INDEX = 2     # 显示器索引：None=主显示器(Pillow)，1=第一显示器，2=第二显示器(扩展屏)
